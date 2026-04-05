@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 200 20% 98%;
+    --foreground: 210 40% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 40% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 12%;
+
+    --primary: 199 89% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 168 60% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 200 18% 94%;
+    --muted-foreground: 210 10% 46%;
+
+    --accent: 38 92% 55%;
+    --accent-foreground: 30 80% 15%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 20% 88%;
+    --input: 200 20% 88%;
+    --ring: 199 89% 36%;
+
+    --radius: 0.75rem;
+
+    --ocean-deep: 210 80% 20%;
+    --ocean-mid: 199 70% 45%;
+    --ocean-light: 195 60% 85%;
+    --ocean-foam: 190 40% 95%;
+    --sand: 38 40% 90%;
+    --coral: 16 80% 58%;
+    --seaweed: 155 50% 35%;
+    --warning: 38 92% 55%;
+
+    --grael-navy: 207 78% 16%;
+    --grael-gold: 42 92% 56%;
+
+    --sidebar-background: 210 60% 14%;
+    --sidebar-foreground: 200 20% 90%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 50% 22%;
+    --sidebar-accent-foreground: 200 20% 90%;
+    --sidebar-border: 210 40% 22%;
+    --sidebar-ring: 199 89% 48%;
+
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  .gradient-ocean {
+    background: linear-gradient(135deg, hsl(210 80% 20%), hsl(199 70% 45%));
+  }
+  .gradient-ocean-light {
+    background: linear-gradient(135deg, hsl(199 89% 36%), hsl(168 60% 40%));
+  }
+  .text-gradient-ocean {
+    background: linear-gradient(135deg, hsl(199 89% 36%), hsl(168 60% 40%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .shadow-ocean {
+    box-shadow: 0 10px 40px -12px hsl(199 89% 36% / 0.25);
+  }
+  .glass-card {
+    background: hsl(0 0% 100% / 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(200 20% 88% / 0.6);
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  z-index: 0;
+  border-radius: var(--radius);
+}

@@ -1,0 +1,550 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+body { font-family: Arial, sans-serif; margin: 40px 60px; color: #1a1a2e; line-height: 1.6; font-size: 11pt; }
+h1 { color: #0a5c82; border-bottom: 3px solid #0a5c82; padding-bottom: 8px; }
+h2 { color: #0a5c82; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-top: 30px; }
+h3 { color: #1a6b5a; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10pt; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+th { background: #0a5c82; color: white; }
+tr:nth-child(even) { background: #f5f9fc; }
+code { background: #f0f4f8; padding: 2px 5px; border-radius: 3px; font-size: 9pt; }
+pre { background: #1a1a2e; color: #e0e0e0; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 9pt; }
+pre code { background: none; color: inherit; }
+</style></head><body><h1>🌊 BaíaViva — Documentação Técnica Completa</h1>
+<h2>Monitoramento Ambiental da Baía de Guanabara</h2>
+<h3>Projeto Grael — Niterói, RJ</h3>
+<p><strong>Versão:</strong> 2.1.0<br />
+<strong>Data:</strong> Abril 2026<br />
+<strong>Status:</strong> MVP Completo com Backend, Admin e Landing Page<br />
+<strong>Instituição:</strong> Projeto Grael (projetograel.org.br)</p>
+<hr />
+<h2>1. Visão Geral</h2>
+<p>O BaíaViva é uma plataforma web colaborativa de ciência cidadã para monitoramento ambiental da Baía de Guanabara (RJ). Desenvolvida em parceria com o Projeto Grael, permite que professores, alunos e a comunidade coletem, visualizem, moderem e exportem dados sobre qualidade da água, poluição e condições ambientais.</p>
+<h3>1.1 Objetivos</h3>
+<ul>
+<li>Coletar dados científicos padronizados sobre condições ambientais</li>
+<li>Permitir que a comunidade reporte ocorrências (lixo, animais doentes, etc.)</li>
+<li>Gerar visualizações e dashboards com dados em tempo real</li>
+<li>Exportar dados em formatos compatíveis com ArcGIS (GeoJSON, CSV, XLSX)</li>
+<li>Moderar e validar relatos comunitários antes da publicação</li>
+</ul>
+<h3>1.2 Público-Alvo</h3>
+<table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>Permissões</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Admin</strong></td>
+<td>Gestão total, moderação, gestão de papéis, exportação XLSX/CSV</td>
+</tr>
+<tr>
+<td><strong>Professor</strong></td>
+<td>Coleta científica, visualização, exportação</td>
+</tr>
+<tr>
+<td><strong>Aluno (Student)</strong></td>
+<td>Coleta científica, visualização</td>
+</tr>
+<tr>
+<td><strong>Comunidade</strong></td>
+<td>Relatos geolocalizados, ver relatos aprovados</td>
+</tr>
+<tr>
+<td><strong>Visitante</strong></td>
+<td>Acesso à landing page pública</td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 Credenciais de Teste</h3>
+<table>
+<thead>
+<tr>
+<th>Email</th>
+<th>Senha</th>
+<th>Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>admin@baiaviva.test</td>
+<td>Admin123!</td>
+<td>Administrador</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>2. Stack Tecnológica</h2>
+<table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Tecnologia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>React 18 + TypeScript 5 + Vite 5</td>
+</tr>
+<tr>
+<td><strong>Estilização</strong></td>
+<td>Tailwind CSS 3 + shadcn/ui</td>
+</tr>
+<tr>
+<td><strong>Mapas</strong></td>
+<td>Leaflet + OpenStreetMap</td>
+</tr>
+<tr>
+<td><strong>Gráficos</strong></td>
+<td>Recharts</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Lovable Cloud (Supabase)</td>
+</tr>
+<tr>
+<td><strong>Banco de Dados</strong></td>
+<td>PostgreSQL (via Supabase)</td>
+</tr>
+<tr>
+<td><strong>Autenticação</strong></td>
+<td>Supabase Auth (email/senha)</td>
+</tr>
+<tr>
+<td><strong>Armazenamento</strong></td>
+<td>Supabase Storage (fotos — bucket <code>community-photos</code>)</td>
+</tr>
+<tr>
+<td><strong>Formulários</strong></td>
+<td>React Hook Form</td>
+</tr>
+<tr>
+<td><strong>Estado Servidor</strong></td>
+<td>TanStack React Query</td>
+</tr>
+<tr>
+<td><strong>Exportação</strong></td>
+<td>SheetJS (xlsx) para XLSX/CSV + GeoJSON nativo</td>
+</tr>
+<tr>
+<td><strong>Deploy</strong></td>
+<td>Lovable (preview) / Vercel (produção)</td>
+</tr>
+</tbody>
+</table>
+<h3>2.1 Custo</h3>
+<p><strong>Totalmente gratuito:</strong>
+- Lovable Cloud: $25/mês de saldo gratuito incluído
+- OpenStreetMap: tiles gratuitos
+- Vercel: plano hobby gratuito
+- Sem VPS, sem custos de hospedagem</p>
+<hr />
+<h2>3. Arquitetura do Banco de Dados</h2>
+<h3>3.1 Enums</h3>
+<pre><code class="language-sql">app_role: admin | professor | student | community
+report_type: floating_trash | dead_fish | pollution | other
+report_status: pending | approved | rejected
+weather_condition: sunny | cloudy | rainy | stormy | foggy
+</code></pre>
+<h3>3.2 Tabelas</h3>
+<h4><code>user_roles</code></h4>
+<p>Armazena o papel de cada usuário. <strong>Separado do perfil por segurança</strong> (previne escalação de privilégios).
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| id | UUID | PK |
+| user_id | UUID | FK → auth.users |
+| role | app_role | Papel do usuário |</p>
+<h4><code>profiles</code></h4>
+<p>Dados adicionais do usuário. Criado automaticamente no cadastro via trigger <code>handle_new_user</code>.
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| id | UUID | PK |
+| user_id | UUID | FK → auth.users (unique) |
+| full_name | TEXT | Nome completo |
+| email | TEXT | Email |
+| institution | TEXT | Instituição |</p>
+<h4><code>collection_points</code></h4>
+<p>Pontos de coleta científica georreferenciados (6 pontos pré-cadastrados).
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| id | UUID | PK |
+| name | TEXT | Nome do ponto |
+| latitude | DOUBLE PRECISION | Latitude (WGS84) |
+| longitude | DOUBLE PRECISION | Longitude (WGS84) |
+| description | TEXT | Descrição |
+| created_by | UUID | FK → auth.users |</p>
+<h4><code>scientific_records</code></h4>
+<p>Registros de campo dos monitoramentos científicos.
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| id | UUID | PK |
+| collection_point_id | UUID | FK → collection_points |
+| user_id | UUID | FK → auth.users |
+| turbidity | DECIMAL(6,2) | Turbidez (NTU) |
+| ph | DECIMAL(4,2) | pH da água |
+| water_temp | DECIMAL(5,2) | Temperatura (°C) |
+| trash_count | INT | Contagem de lixo |
+| weather | weather_condition | Condição climática |
+| wind_speed | DECIMAL(5,2) | Velocidade do vento (km/h) |
+| wind_direction | TEXT | Direção do vento |
+| water_appearance | TEXT | Aspecto visual da água |
+| latitude | DOUBLE PRECISION | Latitude (WGS84) |
+| longitude | DOUBLE PRECISION | Longitude (WGS84) |
+| notes | TEXT | Observações |
+| recorded_at | TIMESTAMPTZ | Data/hora da coleta |</p>
+<h4><code>community_reports</code></h4>
+<p>Relatos da comunidade sobre ocorrências ambientais.
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| id | UUID | PK |
+| reporter_id | UUID | FK → auth.users |
+| type | report_type | Tipo de ocorrência |
+| description | TEXT | Descrição |
+| latitude | DOUBLE PRECISION | Latitude (WGS84) |
+| longitude | DOUBLE PRECISION | Longitude (WGS84) |
+| photo_url | TEXT | URL da foto (Supabase Storage) |
+| status | report_status | pending → approved/rejected |
+| reporter_name | TEXT | Nome do relator |
+| moderated_by | UUID | FK → auth.users (moderador) |
+| moderated_at | TIMESTAMPTZ | Data da moderação |</p>
+<hr />
+<h2>4. Segurança (RLS)</h2>
+<p>Todas as tabelas possuem <strong>Row Level Security (RLS) ativado</strong>.</p>
+<h3>4.1 Funções auxiliares (SECURITY DEFINER)</h3>
+<ul>
+<li><code>has_role(user_id, role)</code> → verifica se usuário tem determinado papel</li>
+<li><code>get_user_role(user_id)</code> → retorna o papel do usuário</li>
+<li><code>handle_new_user()</code> → trigger que cria perfil + role "community" automaticamente no cadastro</li>
+<li><code>update_updated_at_column()</code> → atualiza timestamp em updates</li>
+</ul>
+<h3>4.2 Políticas por tabela</h3>
+<table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Operação</th>
+<th>Quem pode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_roles</td>
+<td>SELECT</td>
+<td>Próprio usuário ou admin</td>
+</tr>
+<tr>
+<td>user_roles</td>
+<td>INSERT/UPDATE/DELETE</td>
+<td>Apenas admin</td>
+</tr>
+<tr>
+<td>profiles</td>
+<td>SELECT</td>
+<td>Próprio usuário ou admin</td>
+</tr>
+<tr>
+<td>profiles</td>
+<td>UPDATE</td>
+<td>Próprio usuário</td>
+</tr>
+<tr>
+<td>collection_points</td>
+<td>SELECT</td>
+<td>Todos autenticados</td>
+</tr>
+<tr>
+<td>collection_points</td>
+<td>INSERT/UPDATE/DELETE</td>
+<td>Apenas admin</td>
+</tr>
+<tr>
+<td>scientific_records</td>
+<td>SELECT/INSERT</td>
+<td>Admin, professor, student</td>
+</tr>
+<tr>
+<td>scientific_records</td>
+<td>UPDATE/DELETE</td>
+<td>Apenas admin</td>
+</tr>
+<tr>
+<td>community_reports</td>
+<td>SELECT</td>
+<td>Aprovados (todos) ou próprios ou admin</td>
+</tr>
+<tr>
+<td>community_reports</td>
+<td>INSERT</td>
+<td>Usuário autenticado (como reporter)</td>
+</tr>
+<tr>
+<td>community_reports</td>
+<td>UPDATE/DELETE</td>
+<td>Apenas admin</td>
+</tr>
+</tbody>
+</table>
+<h3>4.3 Storage</h3>
+<ul>
+<li><strong>Bucket:</strong> <code>community-photos</code> (privado)</li>
+<li>Upload: usuário autenticado (pasta por user_id)</li>
+<li>Leitura: dono da foto ou admin</li>
+<li>Exclusão: apenas admin</li>
+</ul>
+<hr />
+<h2>5. Estrutura de Arquivos</h2>
+<pre><code>src/
+├── App.tsx                      # Rotas com proteção por papel
+├── contexts/
+│   └── AuthContext.tsx           # Contexto de autenticação global
+├── components/
+│   ├── AppLayout.tsx             # Layout com sidebar, info do usuário, logout
+│   ├── BayMap.tsx                # Mapa Leaflet com dados do Supabase
+│   ├── ProtectedRoute.tsx        # Proteção de rotas por autenticação/papel
+│   ├── StatCard.tsx              # Card de estatística
+│   ├── NavLink.tsx               # NavLink compatível com react-router
+│   └── ui/                       # Componentes shadcn/ui
+├── hooks/
+│   ├── useSupabaseData.ts        # Hooks React Query (CRUD todas as tabelas)
+│   └── use-mobile.tsx            # Hook de detecção mobile
+├── integrations/supabase/
+│   ├── client.ts                 # Cliente Supabase configurado
+│   └── types.ts                  # Tipos gerados automaticamente
+├── pages/
+│   ├── LandingPage.tsx           # Landing page pública (Projeto Grael)
+│   ├── Auth.tsx                  # Login / Cadastro
+│   ├── Dashboard.tsx             # Painel com gráficos e mapa
+│   ├── MapPage.tsx               # Mapa em tela cheia
+│   ├── ScientificCollection.tsx  # Formulário de coleta científica
+│   ├── CommunityReports.tsx      # Relatos comunitários
+│   ├── DataExport.tsx            # Tabelas e exportação CSV/GeoJSON
+│   └── AdminPanel.tsx            # Painel admin: moderação, usuários, exportação
+├── assets/
+│   ├── hero-bay.jpg              # Imagem hero da landing page
+│   ├── students-monitoring.jpg   # Alunos monitorando
+│   └── community-report.jpg     # Comunidade reportando
+└── lib/
+    ├── mock-data.ts              # Dados mock (mantido como referência)
+    └── utils.ts                  # Utilitários (cn)
+</code></pre>
+<hr />
+<h2>6. Rotas da Aplicação</h2>
+<table>
+<thead>
+<tr>
+<th>Rota</th>
+<th>Acesso</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>Público</td>
+<td>Landing page do Projeto Grael</td>
+</tr>
+<tr>
+<td><code>/auth</code></td>
+<td>Público</td>
+<td>Login e cadastro</td>
+</tr>
+<tr>
+<td><code>/dashboard</code></td>
+<td>Autenticado</td>
+<td>Painel de monitoramento com gráficos</td>
+</tr>
+<tr>
+<td><code>/mapa</code></td>
+<td>Autenticado</td>
+<td>Mapa interativo em tela cheia</td>
+</tr>
+<tr>
+<td><code>/coleta</code></td>
+<td>Admin/Professor/Aluno</td>
+<td>Formulário de coleta científica</td>
+</tr>
+<tr>
+<td><code>/comunidade</code></td>
+<td>Autenticado</td>
+<td>Envio de relatos comunitários</td>
+</tr>
+<tr>
+<td><code>/dados</code></td>
+<td>Admin/Professor/Aluno</td>
+<td>Tabelas e exportação CSV/GeoJSON</td>
+</tr>
+<tr>
+<td><code>/admin</code></td>
+<td>Admin</td>
+<td>Moderação, gestão de usuários, exportação XLSX</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>7. Fluxos Principais</h2>
+<h3>7.1 Cadastro e Login</h3>
+<ol>
+<li>Visitante acessa landing page (<code>/</code>)</li>
+<li>Clica em "Participar Agora" → <code>/auth</code></li>
+<li>Cria conta com email/senha/nome</li>
+<li>Trigger <code>handle_new_user</code> cria perfil + role <code>community</code></li>
+<li>Admin pode promover via Painel de Administração (<code>/admin</code> → Usuários)</li>
+</ol>
+<h3>7.2 Coleta Científica</h3>
+<ol>
+<li>Professor/aluno acessa <code>/coleta</code></li>
+<li>Seleciona ponto de coleta do banco de dados</li>
+<li>Captura GPS do navegador ou digita coordenadas</li>
+<li>Preenche dados (turbidez NTU, pH, temperatura °C, contagem de lixo, clima, vento)</li>
+<li>Salva → <code>scientific_records</code> via Supabase com RLS</li>
+</ol>
+<h3>7.3 Relato Comunitário</h3>
+<ol>
+<li>Qualquer usuário autenticado acessa <code>/comunidade</code></li>
+<li>Clica no mapa ou usa GPS para selecionar localização</li>
+<li>Seleciona tipo (lixo flutuante, peixe morto, poluição, outro) e descreve</li>
+<li>Envia → <code>community_reports</code> com status <code>pending</code></li>
+<li>Admin modera no Painel de Administração (aprova/rejeita)</li>
+</ol>
+<h3>7.4 Moderação (Admin)</h3>
+<ol>
+<li>Admin acessa <code>/admin</code> → aba "Moderação"</li>
+<li>Filtra por status (Pendentes/Aprovados/Rejeitados/Todos)</li>
+<li>Aprova ✅ ou rejeita ❌ cada relato</li>
+<li>Relatos aprovados aparecem no mapa e no dashboard</li>
+</ol>
+<h3>7.5 Gestão de Usuários (Admin)</h3>
+<ol>
+<li>Admin acessa <code>/admin</code> → aba "Usuários"</li>
+<li>Visualiza todos os usuários cadastrados</li>
+<li>Altera papel via dropdown (Comunidade → Professor → Aluno → Admin)</li>
+</ol>
+<h3>7.6 Exportação de Dados</h3>
+<ol>
+<li>Via <code>/dados</code>: CSV e GeoJSON (WGS84/EPSG:4326)</li>
+<li>Via <code>/admin</code> → aba "Exportar": <strong>XLSX</strong> e CSV para coletas, relatos e usuários</li>
+<li>GeoJSON compatível diretamente com ArcGIS, QGIS e Google Earth</li>
+</ol>
+<hr />
+<h2>8. Coordenadas e Georreferenciamento</h2>
+<ul>
+<li><strong>Sistema de coordenadas</strong>: WGS84 (EPSG:4326)</li>
+<li><strong>Formato GeoJSON</strong>: <code>[longitude, latitude]</code> (padrão OGC)</li>
+<li><strong>CRS declarado no GeoJSON</strong>: <code>urn:ogc:def:crs:EPSG::4326</code></li>
+<li><strong>Compatibilidade</strong>: ArcGIS, QGIS, Google Earth, Mapbox</li>
+<li><strong>Pontos de coleta pré-cadastrados</strong> (6 pontos na Baía de Guanabara):</li>
+<li>Praia de Botafogo, Ilha de Paquetá, Praia de Icaraí</li>
+<li>Ilha do Governador, São Gonçalo, Praia de Jurujuba</li>
+</ul>
+<hr />
+<h2>9. Guia de Manutenção</h2>
+<h3>9.1 Adicionar novo ponto de coleta</h3>
+<ul>
+<li><strong>Via Admin</strong>: Futuramente pelo painel (a implementar)</li>
+<li><strong>Via SQL</strong>: <code>INSERT INTO collection_points (name, latitude, longitude, description) VALUES (...)</code></li>
+<li><strong>Via Lovable Cloud</strong>: Database → <code>collection_points</code> → Insert</li>
+</ul>
+<h3>9.2 Promover usuário</h3>
+<ul>
+<li><strong>Via Painel Admin</strong> (<code>/admin</code> → Usuários): Selecionar novo papel no dropdown</li>
+<li><strong>Via SQL</strong>: <code>UPDATE user_roles SET role = 'professor' WHERE user_id = '&lt;uuid&gt;'</code></li>
+</ul>
+<h3>9.3 Adicionar novo tipo de relato</h3>
+<ol>
+<li>Criar migration: <code>ALTER TYPE report_type ADD VALUE 'novo_tipo'</code></li>
+<li>Atualizar <code>REPORT_TYPE_LABELS</code> e <code>REPORT_TYPE_COLORS</code> em:</li>
+<li><code>CommunityReports.tsx</code></li>
+<li><code>Dashboard.tsx</code></li>
+<li><code>DataExport.tsx</code></li>
+<li><code>AdminPanel.tsx</code></li>
+<li><code>BayMap.tsx</code></li>
+</ol>
+<h3>9.4 Adicionar novo campo ao formulário de coleta</h3>
+<ol>
+<li>Criar migration: <code>ALTER TABLE scientific_records ADD COLUMN novo_campo TIPO</code></li>
+<li>Atualizar <code>ScientificCollection.tsx</code> (formulário)</li>
+<li>Atualizar <code>useSupabaseData.ts</code> (hooks)</li>
+<li>Atualizar <code>DataExport.tsx</code> e <code>AdminPanel.tsx</code> (tabelas e exportação)</li>
+<li>Atualizar <code>Dashboard.tsx</code> (se agregar dados)</li>
+</ol>
+<h3>9.5 Backup dos dados</h3>
+<pre><code class="language-bash"># Via psql (variáveis já configuradas no Lovable Cloud)
+psql -c &quot;COPY (SELECT * FROM scientific_records) TO STDOUT WITH CSV HEADER&quot; &gt; backup_coletas.csv
+psql -c &quot;COPY (SELECT * FROM community_reports) TO STDOUT WITH CSV HEADER&quot; &gt; backup_relatos.csv
+</code></pre>
+<hr />
+<h2>10. Design System</h2>
+<h3>10.1 Cores</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>HSL</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--primary</code></td>
+<td>199 89% 36%</td>
+<td>Azul oceânico principal</td>
+</tr>
+<tr>
+<td><code>--secondary</code></td>
+<td>168 60% 40%</td>
+<td>Verde-água</td>
+</tr>
+<tr>
+<td><code>--accent</code></td>
+<td>38 92% 55%</td>
+<td>Amarelo/âmbar de destaque</td>
+</tr>
+<tr>
+<td><code>--grael-navy</code></td>
+<td>207 78% 16%</td>
+<td>Azul marinho Projeto Grael</td>
+</tr>
+<tr>
+<td><code>--grael-gold</code></td>
+<td>42 92% 56%</td>
+<td>Dourado Projeto Grael</td>
+</tr>
+<tr>
+<td><code>--coral</code></td>
+<td>16 80% 58%</td>
+<td>Coral para alertas</td>
+</tr>
+<tr>
+<td><code>--ocean-deep</code></td>
+<td>210 80% 20%</td>
+<td>Oceano profundo</td>
+</tr>
+</tbody>
+</table>
+<h3>10.2 Tipografia</h3>
+<ul>
+<li><strong>Headings</strong>: Plus Jakarta Sans (800, 700, 600)</li>
+<li><strong>Body</strong>: Inter (400, 500, 600)</li>
+</ul>
+<h3>10.3 Componentes visuais</h3>
+<ul>
+<li><code>glass-card</code>: Glassmorphism com blur e borda translúcida</li>
+<li><code>gradient-ocean</code>: Gradiente de oceano profundo</li>
+<li><code>shadow-ocean</code>: Sombra azulada suave</li>
+</ul>
+<hr />
+<h2>11. Próximos Passos</h2>
+<ul>
+<li>[ ] Upload de fotos nos relatos comunitários (bucket já criado)</li>
+<li>[ ] PWA para funcionamento offline em campo</li>
+<li>[ ] Notificações por email para novos relatos pendentes</li>
+<li>[ ] Integração com API de marés e dados meteorológicos</li>
+<li>[ ] Histórico temporal / série histórica de qualidade por ponto</li>
+<li>[ ] CRUD de pontos de coleta pelo painel admin</li>
+<li>[ ] Relatórios PDF automáticos por período</li>
+</ul></body></html>
